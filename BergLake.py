@@ -23,7 +23,7 @@ except configparser.NoOptionError :#except with no options error
     print('could not read configuration file')#Error message if can't read 
     sys.exit(1)  #exit program on error
 try:#try/except block
-    browser = webdriver.Chrome(executable_path=browser)#get brower
+    browser = webdriver.Firefox(executable_path=browser)#get brower
     browser.get(website)#website to check
     time.sleep(5)#slow thing down to process
 except Exception as e:
