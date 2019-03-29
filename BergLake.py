@@ -68,14 +68,21 @@ except Exception as e:
     file_obj.write(str(datetime.datetime.now())+str(e)+" tent pad\n") #write to tent pad
     file_obj.close()#close text file
 try:#try/except block
-    content = browser.find_elements_by_class_name('avail')#get elements for avil
+    content = browser.find_element_by_id('selItineraryResource')#get element for what available
+    content = content.find_elements_by_class_name('avail')
 except Exception as e:
     file_obj = open(textfile,"a") #open text file
     file_obj.write(str(datetime.datetime.now())+str(e)+" find elements\n") #write to text for error find elements 
     file_obj.close()#close text file
 try: #try/except block
-    if len(content)>0:#running if content greater than 1
-        msg="There might be some berg lake availabity"#msg to sent as text
+    match=False#set match to false
+    msg =""
+    for x in content:#loop thru the content that was return 
+        text=x.text.split(' - ')[1]
+        if text=="Emperor Falls" or text=="Marmot" or text=="Berg Lake" or text=="Rearguard" or text=="Robson Pass" :#check if any available is number 30
+            msg=msg +text+" "#msg to sent as text               
+            match=True#set match to true
+    if match:#running if content greater than 1
         server = smtplib.SMTP(mailserver)#set the mail server
         server.ehlo()#say hello to other server
         server.starttls()#start secure connection
@@ -83,7 +90,7 @@ try: #try/except block
         server.sendmail(fromaddr, toaddrs, msg)#send mail 
         server.quit()#exit the server
         file_obj = open(textfile,"a") #open text file
-        file_obj.write(str(datetime.datetime.now())+" - Available\n") #write to file for none available
+        file_obj.write(str(datetime.datetime.now())+" "+msg+" - Available\n") #write to file for none available
         file_obj.close()#close text file
     else:
         file_obj = open(textfile,"a") #open text file
